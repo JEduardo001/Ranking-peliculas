@@ -3,9 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Detalles de la Película</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="app.js"></script> <!-- Tu archivo JavaScript -->
 </head>
 <body>
-    <h1>estas en movie</h1>
+    <div id="movie-app">
+        <h1>{{ movie.title }}</h1>
+        <p>{{ movie.overview }}</p>
+        <p><strong>Rating:</strong> {{ movie.vote_average }}</p>
+        <p><strong>Fecha de Lanzamiento:</strong> {{ movie.release_date }}</p>
+        <img :src="movie.poster_path" alt="Poster" />
+    </div>
+
+    <script>
+        const movieId = new URLSearchParams(window.location.search).get('id'); // Obtiene el ID de la película de la URL
+
+        new Vue({
+            el: '#movie-app',
+            data: {
+                movie: {}
+            },
+            created() {
+                this.fetchMovieDetails();
+            },
+            methods: {
+                async fetchMovieDetails() {
+                    const response = await api.get(`movie/${movieId}`);
+                    this.movie = response.data;
+                }
+            }
+        });
+    </script>
 </body>
 </html>
