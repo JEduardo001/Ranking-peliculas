@@ -3,50 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Ranking de Películas</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- Carga Axios -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .movies-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .movie-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .movie-card img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+
+        .movie-card h2 {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .movie-card p {
+            color: #555;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>estas en index</h1>
-
-
-    <template>
-        <div>
+    <div id="app">
+        <header>
             <h1>Películas Populares</h1>
-            <ul>
-                <li v-for="movie in movies" :key="movie.id">{{ movie.title }}</li>
-            </ul>
+        </header>
+        <div class="movies-container">
+            <div class="movie-card" v-for="movie in movies" :key="movie.id">
+                <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" alt="Movie Poster">
+                <h2>{{ movie.title }}</h2>
+                <p>Rating: {{ movie.vote_average }}</p>
+                <p>{{ movie.overview }}</p>
+            </div>
         </div>
-    </template>
-    
-    <script>
-    import api from './apiConfig'; 
-    
-    export default {
-        data() {
-            return {
+    </div>
+
+    <script type="module">
+        const API_KEY = '8a758308cbfef2cba726df108d9563fa';
+        const BASE_URL = 'https://api.themoviedb.org/3/';
+
+        const api = axios.create({
+            baseURL: BASE_URL,
+            params: {
+                api_key: API_KEY
+            }
+        });
+
+        new Vue({
+            el: '#app',
+            data: {
                 movies: []
-            };
-        },
-        created() {
-            this.fetchMovies();
-        },
-        methods: {
-            async fetchMovies() {
-                try {
-                    const response = await api.get('movie/popular');
-                    this.movies = response.data.results;
-                } catch (error) {
-                    console.error('Error fetching movies:', error);
+            },
+            created() {
+                this.fetchMovies();
+            },
+            methods: {
+                async fetchMovies() {
+                    try {
+                        const response = await api.get('movie/popular');
+                        this.movies = response.data.results;
+                    } catch (error) {
+                        console.error('Error al traer datos:', error);
+                    }
                 }
             }
-        }
-    };
+        });
     </script>
-    
-    <style>
-  
-    </style>
-    
-    
 </body>
 </html>
