@@ -11,5 +11,8 @@
   "description": "",
   "devDependencies": {
     "serve": "^14.2.3"
+  },
+  "dependencies": {
+    "axios": "^1.7.7"
   }
 }
