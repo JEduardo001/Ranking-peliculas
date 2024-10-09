@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de la Película</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-    <script src="app.js"></script> <!-- Tu archivo JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- Asegúrate de incluir Axios -->
 </head>
 <body>
     <div id="movie-app">
@@ -13,10 +13,20 @@
         <p>{{ movie.overview }}</p>
         <p><strong>Rating:</strong> {{ movie.vote_average }}</p>
         <p><strong>Fecha de Lanzamiento:</strong> {{ movie.release_date }}</p>
-        <img :src="movie.poster_path" alt="Poster" />
+        <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" alt="Poster" />
     </div>
 
     <script>
+        const API_KEY = '8a758308cbfef2cba726df108d9563fa';
+        const BASE_URL = 'https://api.themoviedb.org/3/';
+
+        const api = axios.create({
+            baseURL: BASE_URL,
+            params: {
+                api_key: API_KEY
+            }
+        });
+
         const movieId = new URLSearchParams(window.location.search).get('id'); // Obtiene el ID de la película de la URL
 
         new Vue({
@@ -29,8 +39,12 @@
             },
             methods: {
                 async fetchMovieDetails() {
-                    const response = await api.get(`movie/${movieId}`);
-                    this.movie = response.data;
+                    try {
+                        const response = await api.get(`movie/${movieId}`);
+                        this.movie = response.data;
+                    } catch (error) {
+                        console.error('Error fetching movie details:', error);
+                    }
                 }
             }
         });
